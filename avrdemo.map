@@ -5,7 +5,7 @@ C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
                               bin/debug/main.o (__do_copy_data)
 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
-                              bin/debug/uart.o (__do_clear_bss)
+                              bin/debug/main.o (__do_clear_bss)
 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a(iob.o)
                               bin/debug/uart.o (__iob)
 
@@ -138,7 +138,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x480
+.text           0x00000000      0x6ce
  *(.vectors)
  .vectors       0x00000000       0x68 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -219,80 +219,84 @@ END GROUP
                 0x000000a2                __vector_8
                 0x000000a2                __vector_14
                 0x000000a2                __vector_10
-                0x000000a2                __vector_16
                 0x000000a2                __vector_18
                 0x000000a2                __vector_20
- .text          0x000000a6        0x0 bin/debug/main.o
- .text          0x000000a6      0x2fc bin/debug/lcd.o
-                0x000000a6                HD44780::OutNibble(unsigned char)
-                0x000000dc                HD44780::WriteCommand(unsigned char)
-                0x00000118                HD44780::GoTo(unsigned char, unsigned char)
-                0x00000128                HD44780::Clear()
-                0x0000013c                HD44780::Home()
-                0x00000150                HD44780::Write(unsigned char)
-                0x00000198                HD44780::WriteData(unsigned char)
-                0x000001a2                HD44780::WriteText(char*)
-                0x00000208                HD44780::CreateChar(unsigned char, unsigned char*)
-                0x00000266                HD44780::Initialize()
-                0x00000394                HD44780::HD44780()
-                0x00000394                HD44780::HD44780()
- .text          0x000003a2       0xa0 bin/debug/uart.o
-                0x000003a2                uart_putchar(char, __file*)
-                0x000003c8                uart_getchar(__file*)
-                0x000003d8                uart_init()
-                0x000003fa                init_serial()
- .text          0x00000442        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
- .text          0x00000442        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
- .text          0x00000442        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
- .text          0x00000442        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a(iob.o)
-                0x00000442                        . = ALIGN (0x2)
+ .text          0x000000a6      0x1ca bin/debug/main.o
+                0x000000a6                __vector_16
+                0x000000ec                initTimer()
+                0x000000fc                millis()
+                0x00000112                displayText(HD44780&, char const*)
+                0x0000014e                displayScroll(HD44780&, char const*, unsigned long)
+ .text          0x00000270      0x2fc bin/debug/lcd.o
+                0x00000270                HD44780::OutNibble(unsigned char)
+                0x000002a6                HD44780::WriteCommand(unsigned char)
+                0x000002e2                HD44780::GoTo(unsigned char, unsigned char)
+                0x000002f2                HD44780::Clear()
+                0x00000306                HD44780::Home()
+                0x0000031a                HD44780::Write(unsigned char)
+                0x00000362                HD44780::WriteData(unsigned char)
+                0x0000036c                HD44780::WriteText(char*)
+                0x000003d2                HD44780::CreateChar(unsigned char, unsigned char*)
+                0x00000430                HD44780::Initialize()
+                0x0000055e                HD44780::HD44780()
+                0x0000055e                HD44780::HD44780()
+ .text          0x0000056c       0xa0 bin/debug/uart.o
+                0x0000056c                uart_putchar(char, __file*)
+                0x00000592                uart_getchar(__file*)
+                0x000005a2                uart_init()
+                0x000005c4                init_serial()
+ .text          0x0000060c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .text          0x0000060c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text          0x0000060c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text          0x0000060c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a(iob.o)
+                0x0000060c                        . = ALIGN (0x2)
  *(.text.*)
- .text.startup  0x00000442       0x3a bin/debug/main.o
-                0x00000442                main
+ .text.startup  0x0000060c       0xbe bin/debug/main.o
+                0x0000060c                main
  .text.libgcc.mul
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.div
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
- .text.libgcc   0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.prologue
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.builtins
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.fmul
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.fixed
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  .text.libgcc.mul
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.div
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
- .text.libgcc   0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc   0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.prologue
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.builtins
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.fmul
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.fixed
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
  .text.libgcc.mul
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
  .text.libgcc.div
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc   0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
  .text.libgcc.prologue
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
  .text.libgcc.builtins
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
  .text.libgcc.fmul
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
  .text.libgcc.fixed
-                0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
-                0x0000047c                        . = ALIGN (0x2)
+                0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+                0x000006ca                        . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000047c        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
-                0x0000047c                _exit
-                0x0000047c                exit
+ .fini9         0x000006ca        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+                0x000006ca                _exit
+                0x000006ca                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -311,68 +315,72 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000047c        0x4 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x000006ca        0x4 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
  *(.hightext)
  *(.hightext*)
  *(.progmemx)
  *(.progmemx.*)
-                0x00000480                        . = ALIGN (0x2)
+                0x000006ce                        . = ALIGN (0x2)
  *(.jumptables)
  *(.jumptables*)
-                0x00000480                        _etext = .
+                0x000006ce                        _etext = .
 
-.data           0x00800100       0x2e load address 0x00000480
+.data           0x00800100       0x72 load address 0x000006ce
                 0x00800100                        PROVIDE (__data_start = .)
  *(.data)
  .data          0x00800100        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
- .data          0x00800100        0x0 bin/debug/main.o
- .data          0x00800100        0x0 bin/debug/lcd.o
- .data          0x00800100        0x0 bin/debug/uart.o
- .data          0x00800100        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
- .data          0x00800100        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
- .data          0x00800100        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
- .data          0x00800100        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a(iob.o)
+ .data          0x00800100        0x4 bin/debug/main.o
+                0x00800100                MESSAGE_ODD
+                0x00800102                MESSAGE_EVEN
+ .data          0x00800104        0x0 bin/debug/lcd.o
+ .data          0x00800104        0x0 bin/debug/uart.o
+ .data          0x00800104        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .data          0x00800104        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .data          0x00800104        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .data          0x00800104        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a(iob.o)
  *(.data*)
  *(.gnu.linkonce.d*)
  *(.rodata)
- .rodata        0x00800100       0x18 bin/debug/lcd.o
+ .rodata        0x00800104       0x18 bin/debug/lcd.o
  *(.rodata*)
  .rodata.str1.1
-                0x00800118       0x15 bin/debug/main.o
-                                  0xc (size before relaxing)
+                0x0080011c       0x55 bin/debug/main.o
+                                 0x4c (size before relaxing)
  .rodata.str1.1
-                0x0080012d        0x0 bin/debug/lcd.o
+                0x00800171        0x0 bin/debug/lcd.o
                                   0x9 (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x0080012e                        . = ALIGN (0x2)
- *fill*         0x0080012d        0x1 
-                0x0080012e                        _edata = .
-                0x0080012e                        PROVIDE (__data_end = .)
+                0x00800172                        . = ALIGN (0x2)
+ *fill*         0x00800171        0x1 
+                0x00800172                        _edata = .
+                0x00800172                        PROVIDE (__data_end = .)
 
-.bss            0x0080012e       0x22
-                0x0080012e                        PROVIDE (__bss_start = .)
+.bss            0x00800172       0x27
+                0x00800172                        PROVIDE (__bss_start = .)
  *(.bss)
- .bss           0x0080012e        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
- .bss           0x0080012e        0x0 bin/debug/main.o
- .bss           0x0080012e        0x0 bin/debug/lcd.o
- .bss           0x0080012e       0x1c bin/debug/uart.o
- .bss           0x0080014a        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
- .bss           0x0080014a        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
- .bss           0x0080014a        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
- .bss           0x0080014a        0x6 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a(iob.o)
-                0x0080014a                __iob
+ .bss           0x00800172        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5/crtatmega328p.o
+ .bss           0x00800172        0x5 bin/debug/main.o
+                0x00800172                minuteCounter
+                0x00800173                milliseconds
+ .bss           0x00800177        0x0 bin/debug/lcd.o
+ .bss           0x00800177       0x1c bin/debug/uart.o
+ .bss           0x00800193        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_exit.o)
+ .bss           0x00800193        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_copy_data.o)
+ .bss           0x00800193        0x0 C:/AVR/bin/../lib/gcc/avr/15.2.0/avr5\libgcc.a(_clear_bss.o)
+ .bss           0x00800193        0x6 C:/AVR/bin/../lib/gcc/avr/15.2.0/../../../../avr/lib/avr5\libc.a(iob.o)
+                0x00800193                __iob
  *(.bss*)
  *(COMMON)
-                0x00800150                        PROVIDE (__bss_end = .)
-                0x00000480                        __data_load_start = LOADADDR (.data)
-                0x000004ae                        __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800199                        PROVIDE (__bss_end = .)
+                0x000006ce                        __data_load_start = LOADADDR (.data)
+                0x00000740                        __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800150        0x0
+.noinit         0x00800199        0x0
                 [!provide]                        PROVIDE (__noinit_start = .)
  *(.noinit .noinit.* .gnu.linkonce.n.*)
                 [!provide]                        PROVIDE (__noinit_end = .)
-                0x00800150                        _end = .
+                0x00800199                        _end = .
                 [!provide]                        PROVIDE (__heap_start = .)
                 0x00000000                        __flmap_init_label = DEFINED (__flmap_noinit_start)?__flmap_noinit_start:0x0
                 0x00000000                        __flmap = DEFINED (__flmap)?__flmap:0x0

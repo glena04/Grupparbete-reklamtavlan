@@ -1,11 +1,15 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include "lcd.h"
-#include "uart.h"
+// NO uart.h - no serial output!
+
+// ============================================
+// SVARTE PETTERS SVARTBYGGEN - Clean Version
+// NO Serial Output - LCD Only
+// ============================================
 
 #define DISPLAY_DURATION_MS 20000  // 20 seconds
 #define SCROLL_DELAY_MS 400
@@ -71,21 +75,13 @@ void displayScroll(HD44780& lcd, const char* text, uint32_t duration) {
 }
 
 int main(void) {
-    init_serial();
+    // NO init_serial() - removed!
     
     HD44780 lcd;
     lcd.Initialize();
     lcd.Clear();
     
     initTimer();
-    
-    printf("===============================\n");
-    printf("Svarte Petters Svartbyggen\n");
-    printf("===============================\n");
-    printf("Display time: 20 seconds\n");
-    printf("Even minutes: SCROLL\n");
-    printf("Odd minutes: TEXT\n");
-    printf("System started!\n\n");
     
     // Welcome screen
     displayText(lcd, "Svarte Petters");
@@ -95,23 +91,20 @@ int main(void) {
     lcd.WriteText((char*)"Svartbyggen");
     _delay_ms(2000);
     
-    // Main advertising loop
+    // Main loop
     while(1) {
         bool isEvenMinute = (minuteCounter % 2 == 0);
         
         if (isEvenMinute) {
-            printf("\n--- EVEN MINUTE %d ---\n", minuteCounter);
-            printf("Message: %s (SCROLL)\n", MESSAGE_EVEN);
+            // EVEN: Scroll
             displayScroll(lcd, MESSAGE_EVEN, DISPLAY_DURATION_MS);
         } else {
-            printf("\n--- ODD MINUTE %d ---\n", minuteCounter);
-            printf("Message: %s (TEXT)\n", MESSAGE_ODD);
+            // ODD: Text
             displayText(lcd, MESSAGE_ODD);
             _delay_ms(DISPLAY_DURATION_MS);
         }
         
         minuteCounter++;
-        printf("Display complete. Next minute: %d\n", minuteCounter);
     }
     
     return 0;
