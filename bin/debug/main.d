@@ -8,4 +8,5 @@ bin/debug/main.o: main.cpp C:/AVR/avr/include/avr/io.h \
  C:/AVR/avr/include/avr/interrupt.h \
  C:/AVR/lib/gcc/avr/15.2.0/include/stdbool.h C:/AVR/avr/include/string.h \
  C:/AVR/lib/gcc/avr/15.2.0/include/stddef.h lcd.h \
- C:/AVR/avr/include/avr/pgmspace.h
+ C:/AVR/avr/include/avr/pgmspace.h uart.h C:/AVR/avr/include/stdio.h \
+ C:/AVR/lib/gcc/avr/15.2.0/include/stdarg.h

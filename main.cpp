@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "lcd.h"
+#include "uart.h"
 // NO uart.h - no serial output!
 
 // ============================================
