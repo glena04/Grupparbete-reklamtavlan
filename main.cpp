@@ -7,29 +7,34 @@
 #include "lcd.h"
 #include "uart.h"
 
-// Timer counter
+#define DISPLAY_DURATION_MS 3000
+
 volatile uint32_t milliseconds = 0;
 
-// ISR for Timer0 overflow (~1ms)
 ISR(TIMER0_OVF_vect) {
     milliseconds++;
 }
 
-// Initialize timer
 void initTimer() {
     TCCR0A = 0;
-    TCCR0B = (1 << CS01) | (1 << CS00);  // Prescaler 64
-    TIMSK0 = (1 << TOIE0);                // Enable overflow interrupt
-    sei();                                // Enable global interrupts
+    TCCR0B = (1 << CS01) | (1 << CS00);
+    TIMSK0 = (1 << TOIE0);
+    sei();
 }
 
-// Get milliseconds
 uint32_t millis() {
     uint32_t ms;
     cli();
     ms = milliseconds;
     sei();
     return ms;
+}
+
+// Display static text on LCD
+void displayText(HD44780& lcd, const char* text) {
+    lcd.Clear();
+    lcd.GoTo(0, 0);
+    lcd.WriteText((char*)text);
 }
 
 int main(void) {
@@ -39,23 +44,19 @@ int main(void) {
     lcd.Initialize();
     lcd.Clear();
     
-    // Initialize timer
     initTimer();
     
-    printf("Timer initialized!\n");
+    printf("Display function test\n");
     
-    lcd.WriteText((char*)"Timer test");
-    
-    uint32_t lastTime = 0;
-    
-    // Test timer by printing every second
+    // Test cycling between two messages
     while(1) {
-        uint32_t currentTime = millis();
+        displayText(lcd, "Message 1");
+        printf("Showing: Message 1\n");
+        _delay_ms(DISPLAY_DURATION_MS);
         
-        if (currentTime - lastTime >= 1000) {
-            printf("Seconds: %lu\n", currentTime / 1000);
-            lastTime = currentTime;
-        }
+        displayText(lcd, "Message 2");
+        printf("Showing: Message 2\n");
+        _delay_ms(DISPLAY_DURATION_MS);
     }
     
     return 0;
