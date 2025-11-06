@@ -8,18 +8,26 @@
 #include "uart.h"
 
 int main(void) {
+    // Initialize serial communication
+    init_serial();
+    
     // Initialize LCD
     HD44780 lcd;
     lcd.Initialize();
     lcd.Clear();
     
-    // Display hello message
+    printf("System started!\n");
+    printf("Svarte Petters Svartbyggen\n");
+    
+    
     lcd.GoTo(0, 0);
-    lcd.WriteText((char*)"Hej! Petter");
+    lcd.WriteText((char*)"Svarte Petters");
+    
+    printf("LCD initialized\n");
     
     // Keep display on
     while(1) {
-        // Do nothing, just display
+        // Do nothing
     }
     
     return 0;
