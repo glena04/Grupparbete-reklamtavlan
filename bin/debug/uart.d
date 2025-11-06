@@ -1,16 +1,9 @@
-bin/debug/uart.o: uart.cpp \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/io.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/sfr_defs.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/inttypes.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/lib/avr-gcc/9/gcc/avr/9.4.0/include/stdint.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/stdint.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/iom328p.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/portpins.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/common.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/version.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/fuse.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/avr/lock.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/stdio.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/lib/avr-gcc/9/gcc/avr/9.4.0/include/stdarg.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/lib/avr-gcc/9/gcc/avr/9.4.0/include/stddef.h \
- /opt/homebrew/Cellar/avr-gcc@9/9.4.0_1/avr/include/util/setbaud.h
+bin/debug/uart.o: uart.cpp C:/AVR/avr/include/avr/io.h \
+ C:/AVR/avr/include/avr/sfr_defs.h C:/AVR/avr/include/inttypes.h \
+ C:/AVR/lib/gcc/avr/15.2.0/include/stdint.h C:/AVR/avr/include/stdint.h \
+ C:/AVR/avr/include/avr/iom328p.h C:/AVR/avr/include/avr/portpins.h \
+ C:/AVR/avr/include/avr/common.h C:/AVR/avr/include/avr/version.h \
+ C:/AVR/avr/include/avr/fuse.h C:/AVR/avr/include/avr/lock.h \
+ C:/AVR/avr/include/stdio.h C:/AVR/lib/gcc/avr/15.2.0/include/stdarg.h \
+ C:/AVR/lib/gcc/avr/15.2.0/include/stddef.h \
+ C:/AVR/avr/include/util/setbaud.h
