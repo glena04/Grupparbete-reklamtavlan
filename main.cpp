@@ -7,9 +7,15 @@
 #include "lcd.h"
 #include "uart.h"
 
-#define DISPLAY_DURATION_MS 3000
+#define DISPLAY_DURATION_MS 20000  // 20 seconds
+#define SCROLL_DELAY_MS 400
+
+// Messages
+const char* MESSAGE_EVEN = "Lat Petter bygga at dig";
+const char* MESSAGE_ODD = "Bygga svart? Ring Petter";
 
 volatile uint32_t milliseconds = 0;
+uint8_t minuteCounter = 0;
 
 ISR(TIMER0_OVF_vect) {
     milliseconds++;
@@ -30,11 +36,38 @@ uint32_t millis() {
     return ms;
 }
 
-// Display static text on LCD
 void displayText(HD44780& lcd, const char* text) {
     lcd.Clear();
     lcd.GoTo(0, 0);
     lcd.WriteText((char*)text);
+}
+
+void displayScroll(HD44780& lcd, const char* text, uint32_t duration) {
+    uint32_t startTime = millis();
+    int textLen = strlen(text);
+    int lcdWidth = 16;
+    int position = lcdWidth;
+    
+    while (millis() - startTime < duration) {
+        lcd.Clear();
+        lcd.GoTo(0, 0);
+        
+        for (int i = 0; i < lcdWidth; i++) {
+            int charIndex = i - position;
+            if (charIndex >= 0 && charIndex < textLen) {
+                lcd.WriteData(text[charIndex]);
+            } else {
+                lcd.WriteData(' ');
+            }
+        }
+        
+        position--;
+        if (position < -textLen) {
+            position = lcdWidth;
+        }
+        
+        _delay_ms(SCROLL_DELAY_MS);
+    }
 }
 
 int main(void) {
@@ -46,17 +79,39 @@ int main(void) {
     
     initTimer();
     
-    printf("Display function test\n");
+    printf("===============================\n");
+    printf("Svarte Petters Svartbyggen\n");
+    printf("===============================\n");
+    printf("Display time: 20 seconds\n");
+    printf("Even minutes: SCROLL\n");
+    printf("Odd minutes: TEXT\n");
+    printf("System started!\n\n");
     
-    // Test cycling between two messages
+    // Welcome screen
+    displayText(lcd, "Svarte Petters");
+    _delay_ms(2000);
+    lcd.Clear();
+    lcd.GoTo(0, 0);
+    lcd.WriteText((char*)"Svartbyggen");
+    _delay_ms(2000);
+    
+    // Main advertising loop
     while(1) {
-        displayText(lcd, "Message 1");
-        printf("Showing: Message 1\n");
-        _delay_ms(DISPLAY_DURATION_MS);
+        bool isEvenMinute = (minuteCounter % 2 == 0);
         
-        displayText(lcd, "Message 2");
-        printf("Showing: Message 2\n");
-        _delay_ms(DISPLAY_DURATION_MS);
+        if (isEvenMinute) {
+            printf("\n--- EVEN MINUTE %d ---\n", minuteCounter);
+            printf("Message: %s (SCROLL)\n", MESSAGE_EVEN);
+            displayScroll(lcd, MESSAGE_EVEN, DISPLAY_DURATION_MS);
+        } else {
+            printf("\n--- ODD MINUTE %d ---\n", minuteCounter);
+            printf("Message: %s (TEXT)\n", MESSAGE_ODD);
+            displayText(lcd, MESSAGE_ODD);
+            _delay_ms(DISPLAY_DURATION_MS);
+        }
+        
+        minuteCounter++;
+        printf("Display complete. Next minute: %d\n", minuteCounter);
     }
     
     return 0;
