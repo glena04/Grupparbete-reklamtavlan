@@ -5,12 +5,13 @@
 #include <string.h>
 #include "lcd.h"
 #include "uart.h"
+
 // NO uart.h - no serial output!
 
 // ============================================
 // SVARTE PETTERS SVARTBYGGEN - Clean Version
 // NO Serial Output - LCD Only
-// ============================================
+
 
 #define DISPLAY_DURATION_MS 20000  // 20 seconds
 #define SCROLL_DELAY_MS 400
