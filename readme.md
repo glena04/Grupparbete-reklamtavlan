@@ -18,3 +18,8 @@ Tidsbaserad logik: Svarte Petter visar olika meddelanden på jämna/ojämna minu
 
 Kunder och deras betalningar:
 
+Syftet med denna grupp arbete är att:
+ -Att arbeta i grupp via GitHub och vscode 
+- Att använda C++ för att lösa ett praktiskt problem
+- Att implementera slumpmässig visning med viktning
+- Att tänka i objektorienterade termer (klasser, objekt, logik)
