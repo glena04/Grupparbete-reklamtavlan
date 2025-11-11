@@ -16,7 +16,16 @@ Tidsbaserad logik: Svarte Petter visar olika meddelanden på jämna/ojämna minu
 
 20 sekunders visning: Varje reklam visas i exakt 20 sekunder
 
-Kunder och deras betalningar:
+
+
+Kunder och deras betalningar
+Kund	                      Betalning	Sannolikhet	Antal meddelanden
+Hederlige Harrys Bilar	    5000 kr	  ~34.5%	       3
+Farmor Ankas Pajer AB	     3000 kr  	~20.7%	       2
+Svarte Petters Svartbyggen	1500 kr	  ~10.3%	       2   tidsbaserat)
+Långbens detektivbyrå	     4000 kr	  ~27.6%	       2
+IOT:s Reklambyrå	          1000 kr	  ~6.9%        	1
+
 
 Syftet med denna grupp arbete är att:
  -Att arbeta i grupp via GitHub och vscode 
