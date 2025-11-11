@@ -24,6 +24,8 @@ Huvudfunktioner
 
 
 
+Kunder och deras betalningar:
+
 ![alt text](image.png)
 
 
