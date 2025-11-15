@@ -31,6 +31,12 @@
 #define LCD_DB7_PORT PORTD
 #define LCD_DB7 (1 << PD7)
 
+// Backlight pin (change if you use a different pin)
+#define LCD_BL_DIR DDRB
+#define LCD_BL_PORT PORTB
+#define LCD_BL (1 << PB0)
+#define LCD_BL_ACTIVE_HIGH 1
+
 // HD44780 commands
 #define HD44780_CLEAR 0x01
 #define HD44780_HOME 0x02
@@ -57,6 +63,10 @@ public:
   void Home(void);
   void Initialize(void);
   void CreateChar(uint8_t location, uint8_t charArray[]);
+
+  // Backlight control (simple API)
+  void backlight(void);            // original call in main.cpp
+  void setBacklight(bool on);      // explicit control
 
 private:
   int position_x;

@@ -19,7 +19,7 @@
 // - Different display modes: text, scroll, blink
 // ============================================
 
-#define DISPLAY_DURATION_MS 20000  // 20 seconds
+#define DISPLAY_DURATION_MS 20000  // 20 seconds.
 #define SCROLL_DELAY_MS 400        // Scroll speed
 #define BLINK_DELAY_MS 500         // Blink speed
 
@@ -110,7 +110,6 @@ uint32_t millis() {
     return ms;
 }
 
-// ============================================
 // CUSTOMER SELECTION
 // ============================================
 
@@ -169,9 +168,7 @@ int getMessageForCustomer(Customer customer) {
     return 0;  // Fallback
 }
 
-// ============================================
 // DISPLAY FUNCTIONS
-// ============================================
 
 // Display static text
 void displayText(HD44780& lcd, const char* text) {
@@ -255,17 +252,16 @@ void displayMessage(HD44780& lcd, const Message& msg) {
     }
 }
 
-
 // MAIN PROGRAM
 
-
 int main(void) {
-    // Initialize serial communication
+    // Initialize serial communication.
     init_serial();
     
     // Initialize LCD
     HD44780 lcd;
     lcd.Initialize();
+    lcd.backlight();
     lcd.Clear();
     
     // Initialize timer for millis()

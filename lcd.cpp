@@ -7,6 +7,31 @@ HD44780::HD44780()
   Initialize();
 }
 
+
+// Simple backlight functions
+void HD44780::setBacklight(bool on) {
+    // configure backlight pin as output
+    LCD_BL_DIR |= LCD_BL;
+#if LCD_BL_ACTIVE_HIGH
+    if (on) {
+        LCD_BL_PORT |= LCD_BL;   // HIGH = on
+    } else {
+        LCD_BL_PORT &= ~LCD_BL;  // LOW = off
+    }
+#else
+    if (on) {
+        LCD_BL_PORT &= ~LCD_BL;  // LOW = on (inverted)
+    } else {
+        LCD_BL_PORT |= LCD_BL;   // HIGH = off
+    }
+#endif
+}
+
+void HD44780::backlight(void) {
+    setBacklight(true);
+}
+
+
 void HD44780::WriteCommand(unsigned char cmd)
 {
   OutNibble(cmd >> 4);
@@ -68,8 +93,11 @@ void HD44780::Initialize(void)
   LCD_DB5_DIR |= LCD_DB5;
   LCD_DB6_DIR |= LCD_DB6;
   LCD_DB7_DIR |= LCD_DB7;
+  LCD_BL_DIR |= LCD_BL;           // ADD THIS: backlight pin as output
 
-  LCD_RS_PORT = LCD_RS_PORT & ~(1 << LCD_E) & ~(1 << LCD_RS);
+  LCD_E_PORT &= ~LCD_E;
+  LCD_RS_PORT &= ~LCD_RS;
+  LCD_BL_PORT &= ~LCD_BL; 
 
   // Initialization sequence
   _delay_ms(50);
