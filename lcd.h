@@ -31,25 +31,20 @@
 #define LCD_DB7_PORT PORTD
 #define LCD_DB7 (1 << PD7)
 
-// Backlight pin (change if you use a different pin)
-#define LCD_BL_DIR DDRB
-#define LCD_BL_PORT PORTB
-#define LCD_BL (1 << PB0)
-#define LCD_BL_ACTIVE_HIGH 1
-
 // HD44780 commands
 #define HD44780_CLEAR 0x01
 #define HD44780_HOME 0x02
-// ... [rest of the command set]
 
-#define customA                                                                \
-  { 0x4, 0x0, 0xe, 0x1, 0xf, 0x11, 0xf, 0x0 }
-#define hourglass                                                              \
-  { 0x1f, 0x11, 0xa, 0x4, 0x4, 0xa, 0x11, 0x1f }
-#define leftSideHourglass                                                      \
-  { 0x00, 0x0C, 0x0A, 0x09, 0x0A, 0x0C, 0x00, 0x00 }
-#define rightSideHourglass                                                     \
-  { 0x00, 0x06, 0x0A, 0x12, 0x0A, 0x06, 0x00, 0x00 }
+// Custom character definitions for hourglass
+#define hourglass { 0x1f, 0x11, 0xa, 0x4, 0x4, 0xa, 0x11, 0x1f }
+#define leftSideHourglass { 0x00, 0x0C, 0x0A, 0x09, 0x0A, 0x0C, 0x00, 0x00 }
+#define rightSideHourglass { 0x00, 0x06, 0x0A, 0x12, 0x0A, 0x06, 0x00, 0x00 }
+
+// Character slots for custom Swedish characters
+#define CHAR_AA_RING 0   // å/Å
+#define CHAR_AE_DOTS 1   // ä/Ä
+#define CHAR_OE_DOTS 2   // ö/Ö
+// Slots 3-5 reserved for hourglass animations
 
 // HD44780 LCD class
 class HD44780 {
@@ -57,16 +52,12 @@ public:
   HD44780();
   void WriteCommand(unsigned char cmd);
   void WriteData(unsigned char data);
-  void WriteText(char *text);
+  void WriteText(char *text);  // Now UTF-8 aware!
   void GoTo(unsigned char x, unsigned char y);
   void Clear(void);
   void Home(void);
   void Initialize(void);
   void CreateChar(uint8_t location, uint8_t charArray[]);
-
-  // Backlight control (simple API)
-  void backlight(void);            // original call in main.cpp
-  void setBacklight(bool on);      // explicit control
 
 private:
   int position_x;

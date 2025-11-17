@@ -28,8 +28,8 @@ typedef enum {
     HARRY = 0,      // Hederlige Harrys Bilar - 5000 kr
     FARMOR_ANKA,    // Farmor Ankas Pajer AB - 3000 kr
     PETTER,         // Svarte Petters Svartbyggen - 1500 kr
-    LANGBEN,        // L�ngbens detektivbyr� - 4000 kr
-    IOT_REKLAM      // IOT:s Reklambyr� - 1000 kr
+    LANGBEN,        // Långbens detektivbyrå - 4000 kr
+    IOT_REKLAM      // IOT:s Reklambyrå - 1000 kr
 } Customer;
 
 // Display modes
@@ -49,24 +49,24 @@ typedef struct {
 // All advertising messages
 Message messages[] = {
     // Hederlige Harrys Bilar (5000 kr) - 3 messages, random
-    {"Kop bil hos Harry", MODE_SCROLL, HARRY},
-    {"God bilaffar Harry", MODE_TEXT, HARRY},
+    {"Köp bil hos Harry", MODE_SCROLL, HARRY},
+    {"God bilaffär Harry", MODE_TEXT, HARRY},
     {"Hederlige Harrys", MODE_BLINK, HARRY},
     
     // Farmor Ankas Pajer AB (3000 kr) - 2 messages, random
-    {"Kop paj hos Anka", MODE_SCROLL, FARMOR_ANKA},
-    {"Skynda! Marten ater", MODE_TEXT, FARMOR_ANKA},
+    {"Köp paj hos Anka", MODE_SCROLL, FARMOR_ANKA},
+    {"Skynda! Mårten äter", MODE_TEXT, FARMOR_ANKA},
     
     // Svarte Petters Svartbyggen (1500 kr) - 2 messages, time-based
-    {"Lat Petter bygga", MODE_SCROLL, PETTER},       // Even minutes
+    {"Låt Petter bygga", MODE_SCROLL, PETTER},       // Even minutes
     {"Bygga svart? Ring", MODE_TEXT, PETTER},        // Odd minutes
     
-    // L�ngbens detektivbyr� (4000 kr) - 2 messages, random
-    {"Mysterier? Langben", MODE_TEXT, LANGBEN},
-    {"Langben fixar det", MODE_TEXT, LANGBEN},
+    // Långbens detektivbyrå (4000 kr) - 2 messages, random
+    {"Mysterier? Långben", MODE_TEXT, LANGBEN},
+    {"Långben fixar det", MODE_TEXT, LANGBEN},
     
-    // IOT:s Reklambyr� (1000 kr) - 1 message
-    {"Synas har? IOTs", MODE_TEXT, IOT_REKLAM}
+    // IOT:s Reklambyrå (1000 kr) - 1 message
+    {"Synas här? IOTs", MODE_TEXT, IOT_REKLAM}
 };
 
 // Payment amounts (determines weight in random selection)
@@ -88,17 +88,18 @@ uint8_t minuteCounter = 0;           // For Petter's time-based messages
 // Timer for millis()
 volatile uint32_t milliseconds = 0;
 
-// ISR for Timer0 overflow (~1ms)
-ISR(TIMER0_OVF_vect) {
-    milliseconds++;
+// Initialize timer for millis() function (CTC 1ms)
+void initTimer() {
+    TCCR0A = (1 << WGM01);                                 // CTC mode
+    TCCR0B = (1 << CS01) | (1 << CS00);                    // prescaler 64
+    OCR0A = 249;                                           // compare for ~1 ms (16MHz/64/1000-1)
+    TIMSK0 = (1 << OCIE0A);                                // enable compare match A interrupt
+    sei();                                                 // enable global interrupts
 }
 
-// Initialize timer for millis() function
-void initTimer() {
-    TCCR0A = 0;
-    TCCR0B = (1 << CS01) | (1 << CS00);  // Prescaler 64
-    TIMSK0 = (1 << TOIE0);                // Enable overflow interrupt
-    sei();                                // Enable global interrupts
+// ISR -> increments global milliseconds
+ISR(TIMER0_COMPA_vect) {
+    milliseconds++;
 }
 
 // Get milliseconds since start
@@ -110,6 +111,8 @@ uint32_t millis() {
     return ms;
 }
 
+
+// ============================================
 // CUSTOMER SELECTION
 // ============================================
 
@@ -168,51 +171,93 @@ int getMessageForCustomer(Customer customer) {
     return 0;  // Fallback
 }
 
-// DISPLAY FUNCTIONS
+// Helper function for UTF-8 Swedish characters (for displayText and displayScroll)
+uint8_t fixSwedishUTF8(const char **text) {
+    const unsigned char *p = (const unsigned char*)*text;
+    if (p[0]==0xC3 && p[1]!=0) {
+        uint8_t result;
+        switch(p[1]){
+            case 0xA5: result=CHAR_AA_RING; break;  // å
+            case 0xA4: result=CHAR_AE_DOTS; break;  // ä
+            case 0xB6: result=CHAR_OE_DOTS; break;  // ö
+            case 0x85: result=CHAR_AA_RING; break;  // Å
+            case 0x84: result=CHAR_AE_DOTS; break;  // Ä
+            case 0x96: result=CHAR_OE_DOTS; break;  // Ö
+            default: result='?'; break;
+        }
+        *text += 2;
+        return result;
+    }
+    (*text)++;
+    return *p;
+}
 
-// Display static text
+
+// ============================================
+// DISPLAY FUNCTIONS
+// ============================================
+
+// Display static text (UTF-8-aware)
 void displayText(HD44780& lcd, const char* text) {
     lcd.Clear();
     lcd.GoTo(0, 0);
-    lcd.WriteText((char*)text);
+
+    const char *p = text;
+    int col = 0;
+    while (*p) {
+        unsigned char c = (unsigned char)*p;
+        if (c == 0xC3) {
+            uint8_t out = fixSwedishUTF8(&p);
+            lcd.WriteData(out);
+        } else {
+            lcd.WriteData(c);
+            p++;
+        }
+        col++;
+        if (col == 16) {
+            lcd.GoTo(0, 1);
+        }
+    }
 }
 
-// Display scrolling text (left scroll)
+// Display scrolling text (left scroll) - UTF-8 aware
 void displayScroll(HD44780& lcd, const char* text, uint32_t duration) {
     uint32_t startTime = millis();
-    int textLen = strlen(text);
+
+    // Build array of glyph pointers
+    const char *p = text;
+    const char *glyphs[128];
+    int glyphCount = 0;
+    while (*p && glyphCount < (int)sizeof(glyphs)) {
+        glyphs[glyphCount++] = p;
+        unsigned char c = (unsigned char)*p;
+        if (c == 0xC3) p += 2; else p += 1;
+    }
+
     int lcdWidth = 16;
-    
-    // Start position (off-screen right)
-    int position = lcdWidth;
-    
+    int pos = lcdWidth;
+
     while (millis() - startTime < duration) {
         lcd.Clear();
         lcd.GoTo(0, 0);
-        
-        // Display visible portion of text
-        for (int i = 0; i < lcdWidth; i++) {
-            int charIndex = i - position;
-            if (charIndex >= 0 && charIndex < textLen) {
-                lcd.WriteData(text[charIndex]);
+
+        for (int col = 0; col < lcdWidth; col++) {
+            int gindex = col - pos;
+            if (gindex >= 0 && gindex < glyphCount) {
+                const char *gp = glyphs[gindex];
+                lcd.WriteData(fixSwedishUTF8(&gp));
             } else {
                 lcd.WriteData(' ');
             }
         }
-        
-        // Move text left
-        position--;
-        
-        // Reset when text scrolled off screen
-        if (position < -textLen) {
-            position = lcdWidth;
-        }
-        
+
+        pos--;
+        if (pos < -glyphCount) pos = lcdWidth;
         _delay_ms(SCROLL_DELAY_MS);
     }
 }
 
-// Display blinking text
+// Display blinking text - NOW uses UTF-8 aware WriteText!
 void displayBlink(HD44780& lcd, const char* text, uint32_t duration) {
     uint32_t startTime = millis();
     bool visible = true;
@@ -221,7 +266,7 @@ void displayBlink(HD44780& lcd, const char* text, uint32_t duration) {
         if (visible) {
             lcd.Clear();
             lcd.GoTo(0, 0);
-            lcd.WriteText((char*)text);
+            lcd.WriteText((char*)text);  // WriteText is now UTF-8 aware!
         } else {
             lcd.Clear();
         }
@@ -252,16 +297,18 @@ void displayMessage(HD44780& lcd, const Message& msg) {
     }
 }
 
+
+// ============================================
 // MAIN PROGRAM
+// ============================================
 
 int main(void) {
-    // Initialize serial communication.
+    // Initialize serial communication
     init_serial();
     
-    // Initialize LCD
+    // Initialize LCD (custom chars are created automatically in Initialize())
     HD44780 lcd;
     lcd.Initialize();
-    lcd.backlight();
     lcd.Clear();
     
     // Initialize timer for millis()
@@ -278,7 +325,7 @@ int main(void) {
     printf("System started!\n\n");
     
     // Welcome message
-    displayText(lcd, "IOT Reklambyraa");
+    displayText(lcd, "IOT Reklambyrå");
     _delay_ms(3000);
     lcd.Clear();
     displayText(lcd, "Reklamtavlan");
@@ -300,8 +347,8 @@ int main(void) {
             case HARRY: printf("Hederlige Harrys Bilar\n"); break;
             case FARMOR_ANKA: printf("Farmor Ankas Pajer AB\n"); break;
             case PETTER: printf("Svarte Petters Svartbyggen\n"); break;
-            case LANGBEN: printf("Langbens detektivbyra\n"); break;
-            case IOT_REKLAM: printf("IOT:s Reklambyraa\n"); break;
+            case LANGBEN: printf("Långbens detektivbyrå\n"); break;
+            case IOT_REKLAM: printf("IOT:s Reklambyrå\n"); break;
         }
         printf("Payment: %d kr\n", customerPayments[nextCustomer]);
         
@@ -310,15 +357,13 @@ int main(void) {
         
         // Update state
         lastCustomer = nextCustomer;
-        minuteCounter++;  // Simulate minute counter for Petter
+        minuteCounter++;
         
         printf("Display complete.\n");
     }
     
     return 0;
 }
-
-
 
 
 
