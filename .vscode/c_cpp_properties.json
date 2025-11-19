@@ -1,17 +1,18 @@
 {
     "configurations": [
         {
-            "name": "AVR (MSYS2)",
+            "name": "AVR",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/msys64/usr/avr/include",                // <- replace with actual avr include dir from step 1
-                "C:/msys64/usr/lib/gcc/avr/*/include"      // <- or the gcc target include dir shown by avr-gcc -v
+                "C:/AVR/avr/include",                       // <--- change to your real avr include dir
+                "C:/AVR/lib/gcc/avr/15.2.0/include",       // <--- change to gcc target include dir
+                "C:/AVR/lib/gcc/avr/15.2.0/../../include"  // optional
             ],
             "defines": [
                 "__AVR_ATmega328P__",
                 "F_CPU=16000000UL"
             ],
-            "compilerPath": "C:/msys64/usr/bin/avr-gcc.exe",  // <- replace with actual avr-gcc.exe path from step 1
+            "compilerPath": "C:/AVR/bin/avr-gcc.exe",     // <--- change to the actual path from 'where'
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64"
