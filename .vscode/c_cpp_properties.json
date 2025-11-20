@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "AVR",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/AVR/avr/include",                       // <--- change to your real avr include dir
+                "C:/AVR/lib/gcc/avr/15.2.0/include",       // <--- change to gcc target include dir
+                "C:/AVR/lib/gcc/avr/15.2.0/../../include"  // optional
+            ],
+            "defines": [
+                "__AVR_ATmega328P__",
+                "F_CPU=16000000UL"
+            ],
+            "compilerPath": "C:/AVR/bin/avr-gcc.exe",     // <--- change to the actual path from 'where'
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

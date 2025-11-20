@@ -14,9 +14,9 @@
 // Krav:
 // - 5 kunder med olika betalningsbelopp
 // - Visningstid: 20 sekunder per meddelande
-// - Viktad slumpmÃ¤ssig urval (betalningsfÃ¶rhÃ¥llande)
-// - ALDRIG samma kund tvÃ¥ gÃ¥nger i rad
-// - Olika visningslÃ¤gen: text, rullning, blinkning
+// - Viktad slumpmässig urval (betalningsförhållande)
+// - ALDRIG samma kund två gånger i rad
+// - Olika visningslägen: text, rullning, blinkning
 // ============================================
 
 #define DISPLAY_DURATION_MS 20000  // 20 sekunder
@@ -28,11 +28,11 @@ typedef enum {
     HARRY = 0,      // Hederlige Harrys Bilar - 5000 kr
     FARMOR_ANKA,    // Farmor Ankas Pajer AB - 3000 kr
     PETTER,         // Svarte Petters Svartbyggen - 1500 kr
-    LANGBEN,        // LÃ¥ngbens detektivbyrÃ¥ - 4000 kr
-    IOT_REKLAM      // IOT:s ReklambyrÃ¥ - 1000 kr
+    LANGBEN,        // Långbens detektivbyrå - 4000 kr
+    IOT_REKLAM      // IOT:s Reklambyrå - 1000 kr
 } Customer;
 
-// VisningslÃ¤gen
+// Visningslägen
 typedef enum {
     MODE_TEXT,
     MODE_SCROLL,
@@ -48,28 +48,28 @@ typedef struct {
 
 // Alla reklammeddelanden
 Message messages[] = {
-    // Hederlige Harrys Bilar (5000 kr) - 3 meddelanden, slumpmÃ¤ssigt
-    {"KÃ¶p bil hos Harry", MODE_SCROLL, HARRY},
-    {"God bilaffÃ¤r Harry", MODE_TEXT, HARRY},
+    // Hederlige Harrys Bilar (5000 kr) - 3 meddelanden, slumpmässigt
+    {"Köp bil hos Harry", MODE_SCROLL, HARRY},
+    {"God bilaffär Harry", MODE_TEXT, HARRY},
     {"Hederlige Harrys", MODE_BLINK, HARRY},
     
-    // Farmor Ankas Pajer AB (3000 kr) - 2 meddelanden, slumpmÃ¤ssigt
-    {"KÃ¶p paj hos Anka", MODE_SCROLL, FARMOR_ANKA},
-    {"Skynda! MÃ¥rten Ã¤ter", MODE_TEXT, FARMOR_ANKA},
+    // Farmor Ankas Pajer AB (3000 kr) - 2 meddelanden, slumpmässigt
+    {"Köp paj hos Anka", MODE_SCROLL, FARMOR_ANKA},
+    {"Skynda! Mårten äter", MODE_TEXT, FARMOR_ANKA},
     
     // Svarte Petters Svartbyggen (1500 kr) - 2 meddelanden, tidsbaserat
-    {"LÃ¥t Petter bygga", MODE_SCROLL, PETTER},       // JÃ¤mna minuter
+    {"Låt Petter bygga", MODE_SCROLL, PETTER},       // Jämna minuter
     {"Bygga svart? Ring", MODE_TEXT, PETTER},        // Udda minuter
     
-    // LÃ¥ngbens detektivbyrÃ¥ (4000 kr) - 2 meddelanden, slumpmÃ¤ssigt
-    {"Mysterier? LÃ¥ngben", MODE_TEXT, LANGBEN},
-    {"LÃ¥ngben fixar det", MODE_TEXT, LANGBEN},
+    // Långbens detektivbyrå (4000 kr) - 2 meddelanden, slumpmässigt
+    {"Mysterier? Långben", MODE_TEXT, LANGBEN},
+    {"Långben fixar det", MODE_TEXT, LANGBEN},
     
-    // IOT:s ReklambyrÃ¥ (1000 kr) - 1 meddelande
-    {"Synas hÃ¤r? IOTs", MODE_TEXT, IOT_REKLAM}
+    // IOT:s Reklambyrå (1000 kr) - 1 meddelande
+    {"Synas här? IOTs", MODE_TEXT, IOT_REKLAM}
 };
 
-// Betalningsbelopp (bestÃ¤mmer vikt i slumpmÃ¤ssigt urval)
+// Betalningsbelopp (bestämmer vikt i slumpmässigt urval)
 const int customerPayments[] = {
     5000,  // HARRY
     3000,  // FARMOR_ANKA
@@ -82,27 +82,27 @@ const int NUM_MESSAGES = sizeof(messages) / sizeof(messages[0]);
 const int NUM_CUSTOMERS = sizeof(customerPayments) / sizeof(customerPayments[0]);
 
 // Globala variabler
-Customer lastCustomer = IOT_REKLAM;  // Initiera fÃ¶r att undvika fÃ¶rsta kollisionen
-uint8_t minuteCounter = 0;           // FÃ¶r Petters tidsbaserade meddelanden
+Customer lastCustomer = IOT_REKLAM;  // Initiera för att undvika första kollisionen
+uint8_t minuteCounter = 0;           // För Petters tidsbaserade meddelanden
 
-// Timer fÃ¶r millis()
+// Timer för millis()
 volatile uint32_t milliseconds = 0;
 
-// Initiera timer fÃ¶r millis() funktion (CTC 1ms)
+// Initiera timer för millis() funktion (CTC 1ms)
 void initTimer() {
-    TCCR0A = (1 << WGM01);                                 // CTC-lÃ¤ge
+    TCCR0A = (1 << WGM01);                                 // CTC-läge
     TCCR0B = (1 << CS01) | (1 << CS00);                    // prescaler 64
-    OCR0A = 249;                                           // jÃ¤mfÃ¶r fÃ¶r ~1 ms (16MHz/64/1000-1)
+    OCR0A = 249;                                           // jämför för ~1 ms (16MHz/64/1000-1)
     TIMSK0 = (1 << OCIE0A);                                // aktivera compare match A avbrott
     sei();                                                 // aktivera globala avbrott
 }
 
-// ISR -> Ã¶kar globala millisekunder
+// ISR -> ökar globala millisekunder
 ISR(TIMER0_COMPA_vect) {
     milliseconds++;
 }
 
-// HÃ¤mta millisekunder sedan start
+// Hämta millisekunder sedan start
 uint32_t millis() {
     uint32_t ms;
     cli();
@@ -116,10 +116,10 @@ uint32_t millis() {
 // KUNDURVAL
 // ============================================
 
-// VÃ¤lj slumpmÃ¤ssig kund baserat pÃ¥ betalningsvikt
-// VÃ¤ljer ALDRIG samma kund tvÃ¥ gÃ¥nger i rad
+// Välj slumpmässig kund baserat på betalningsvikt
+// Väljer ALDRIG samma kund två gånger i rad
 Customer selectRandomCustomer() {
-    // BerÃ¤kna total vikt exklusive senaste kunden
+    // Beräkna total vikt exklusive senaste kunden
     int totalWeight = 0;
     for (int i = 0; i < NUM_CUSTOMERS; i++) {
         if ((Customer)i != lastCustomer) {
@@ -127,11 +127,11 @@ Customer selectRandomCustomer() {
         }
     }
     
-    // Generera slumpvÃ¤rde
+    // Generera slumpvärde
     int randomValue = rand() % totalWeight;
     int cumulativeWeight = 0;
     
-    // Hitta kund baserat pÃ¥ viktad sannolikhet
+    // Hitta kund baserat på viktad sannolikhet
     for (int i = 0; i < NUM_CUSTOMERS; i++) {
         if ((Customer)i != lastCustomer) {
             cumulativeWeight += customerPayments[i];
@@ -141,12 +141,12 @@ Customer selectRandomCustomer() {
         }
     }
     
-    return HARRY;  // ReservlÃ¶sning (ska aldrig hÃ¤nda)
+    return HARRY;  // Reservlösning (ska aldrig hända)
 }
 
-// HÃ¤mta meddelandeindex fÃ¶r en specifik kund
+// Hämta meddelandeindex för en specifik kund
 int getMessageForCustomer(Customer customer) {
-    // Hitta alla meddelanden fÃ¶r denna kund
+    // Hitta alla meddelanden för denna kund
     int messageIndices[10];
     int count = 0;
     
@@ -158,31 +158,31 @@ int getMessageForCustomer(Customer customer) {
     
     // Specialfall: Petters tidsbaserade urval
     if (customer == PETTER) {
-        // JÃ¤mn minut (0,2,4...): rullningsmeddelande
+        // Jämn minut (0,2,4...): rullningsmeddelande
         // Udda minut (1,3,5...): textmeddelande
         return messageIndices[minuteCounter % 2];
     }
     
-    // SlumpmÃ¤ssigt urval fÃ¶r andra kunder
+    // Slumpmässigt urval för andra kunder
     if (count > 0) {
         return messageIndices[rand() % count];
     }
     
-    return 0;  // ReservlÃ¶sning
+    return 0;  // Reservlösning
 }
 
-// HjÃ¤lpfunktion fÃ¶r UTF-8 svenska tecken (fÃ¶r displayText och displayScroll)
+// Hjälpfunktion för UTF-8 svenska tecken (för displayText och displayScroll)
 uint8_t fixSwedishUTF8(const char **text) {
     const unsigned char *p = (const unsigned char*)*text;
     if (p[0]==0xC3 && p[1]!=0) {
         uint8_t result;
         switch(p[1]){
-            case 0xA5: result=CHAR_AA_RING; break;  // Ã¥
-            case 0xA4: result=CHAR_AE_DOTS; break;  // Ã¤
-            case 0xB6: result=CHAR_OE_DOTS; break;  // Ã¶
-            case 0x85: result=CHAR_AA_RING; break;  // Ã…
-            case 0x84: result=CHAR_AE_DOTS; break;  // Ã„
-            case 0x96: result=CHAR_OE_DOTS; break;  // Ã–
+            case 0xA5: result=CHAR_AA_RING; break;  // å
+            case 0xA4: result=CHAR_AE_DOTS; break;  // ä
+            case 0xB6: result=CHAR_OE_DOTS; break;  // ö
+            case 0x85: result=CHAR_AA_RING; break;  // Å
+            case 0x84: result=CHAR_AE_DOTS; break;  // Ä
+            case 0x96: result=CHAR_OE_DOTS; break;  // Ö
             default: result='?'; break;
         }
         *text += 2;
@@ -220,7 +220,7 @@ void displayText(HD44780& lcd, const char* text) {
     }
 }
 
-// Visa rullande text (vÃ¤nster rullning) - UTF-8 medveten
+// Visa rullande text (vänster rullning) - UTF-8 medveten
 void displayScroll(HD44780& lcd, const char* text, uint32_t duration) {
     uint32_t startTime = millis();
 
@@ -257,7 +257,7 @@ void displayScroll(HD44780& lcd, const char* text, uint32_t duration) {
     }
 }
 
-// Visa blinkande text - NU anvÃ¤nder UTF-8 medveten WriteText!
+// Visa blinkande text - NU använder UTF-8 medveten WriteText!
 void displayBlink(HD44780& lcd, const char* text, uint32_t duration) {
     uint32_t startTime = millis();
     bool visible = true;
@@ -266,7 +266,7 @@ void displayBlink(HD44780& lcd, const char* text, uint32_t duration) {
         if (visible) {
             lcd.Clear();
             lcd.GoTo(0, 0);
-            lcd.WriteText((char*)text);  // WriteText Ã¤r nu UTF-8 medveten!
+            lcd.WriteText((char*)text);  // WriteText är nu UTF-8 medveten!
         } else {
             lcd.Clear();
         }
@@ -276,9 +276,9 @@ void displayBlink(HD44780& lcd, const char* text, uint32_t duration) {
     }
 }
 
-// Visa ett meddelande baserat pÃ¥ dess lÃ¤ge
+// Visa ett meddelande baserat på dess läge
 void displayMessage(HD44780& lcd, const Message& msg) {
-    printf("Visar: %s (lÃ¤ge: %d, kund: %d)\n", 
+    printf("Visar: %s (läge: %d, kund: %d)\n", 
            msg.text, msg.mode, msg.customer);
     
     switch (msg.mode) {
@@ -311,7 +311,7 @@ int main(void) {
     lcd.Initialize();
     lcd.Clear();
     
-    // Initiera timer fÃ¶r millis()
+    // Initiera timer för millis()
     initTimer();
     
     // Seeda slumptalsgenerator
@@ -324,8 +324,8 @@ int main(void) {
     printf("Visningstid: 20 sekunder\n");
     printf("Systemet startat!\n\n");
     
-    // VÃ¤lkomstmeddelande
-    displayText(lcd, "IOT ReklambyrÃ¥");
+    // Välkomstmeddelande
+    displayText(lcd, "IOT Reklambyrå");
     _delay_ms(3000);
     lcd.Clear();
     displayText(lcd, "Reklamtavlan");
@@ -333,10 +333,10 @@ int main(void) {
     
     // Huvudloop
     while(1) {
-        // VÃ¤lj nÃ¤sta kund (viktad slumpmÃ¤ssig, aldrig samma tvÃ¥ gÃ¥nger)
+        // Välj nästa kund (viktad slumpmässig, aldrig samma två gånger)
         Customer nextCustomer = selectRandomCustomer();
         
-        // HÃ¤mta meddelande fÃ¶r vald kund
+        // Hämta meddelande för vald kund
         int messageIndex = getMessageForCustomer(nextCustomer);
         Message currentMessage = messages[messageIndex];
         
@@ -347,15 +347,15 @@ int main(void) {
             case HARRY: printf("Hederlige Harrys Bilar\n"); break;
             case FARMOR_ANKA: printf("Farmor Ankas Pajer AB\n"); break;
             case PETTER: printf("Svarte Petters Svartbyggen\n"); break;
-            case LANGBEN: printf("LÃ¥ngbens detektivbyrÃ¥\n"); break;
-            case IOT_REKLAM: printf("IOT:s ReklambyrÃ¥\n"); break;
+            case LANGBEN: printf("Långbens detektivbyrå\n"); break;
+            case IOT_REKLAM: printf("IOT:s Reklambyrå\n"); break;
         }
         printf("Betalning: %d kr\n", customerPayments[nextCustomer]);
         
         // Visa meddelandet
         displayMessage(lcd, currentMessage);
         
-        // Uppdatera tillstÃ¥nd
+        // Uppdatera tillstånd
         lastCustomer = nextCustomer;
         minuteCounter++;
         

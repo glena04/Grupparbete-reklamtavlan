@@ -21,22 +21,42 @@ void HD44780::WriteData(unsigned char data)
   LCD_RS_PORT &= ~LCD_RS;
 }
 
+// UTF-8 aware WriteText function
 void HD44780::WriteText(char *text)
 {
-  int charCount = 0; // Track the number of characters printed
-  while (*text)
+  int charCount = 0;
+  const char *p = text;
+  
+  while (*p)
   {
-    if (charCount == 16)
-    { // Move to the second line after 16 characters
+    if (charCount == 16) {
       GoTo(0, 1);
     }
-    // else if (charCount ==
-    //            32) { // Reset if more than 32 characters (display size)
-    //   Clear();       // Clear the display
-    //   GoTo(0, 0);    // Return to the first line
-    //   charCount = 0; // Reset character count
-    // }
-    WriteData(*text++);
+    
+    unsigned char c = (unsigned char)*p;
+    
+    // Check for UTF-8 Swedish characters (Ã followed by specific byte)
+    if (c == 0xC3 && *(p+1)) {
+      uint8_t result;
+      unsigned char next = (unsigned char)*(p+1);
+      
+      switch(next) {
+        case 0xA5: result = CHAR_AA_RING; break;  // å
+        case 0xA4: result = CHAR_AE_DOTS; break;  // ä
+        case 0xB6: result = CHAR_OE_DOTS; break;  // ö
+        case 0x85: result = CHAR_AA_RING; break;  // Å
+        case 0x84: result = CHAR_AE_DOTS; break;  // Ä
+        case 0x96: result = CHAR_OE_DOTS; break;  // Ö
+        default: result = '?'; break;
+      }
+      
+      WriteData(result);
+      p += 2;  // Skip both UTF-8 bytes
+    } else {
+      WriteData(c);
+      p++;
+    }
+    
     charCount++;
   }
 }
@@ -85,15 +105,25 @@ void HD44780::Initialize(void)
   Clear();
   WriteCommand(0x06); // Entry mode: Increment cursor
 
-  _delay_us(25); // safety delay
-  uint8_t customChar[] = customA;
-  CreateChar(0, customChar);
+  _delay_us(25);
+  
+  // Create custom Swedish characters
+  uint8_t aa_ring[8] = {0b00100, 0b00000, 0b01110, 0b00001, 0b01111, 0b10001, 0b01111, 0b00000};
+  CreateChar(CHAR_AA_RING, aa_ring);
+  
+  uint8_t ae_dots[8] = {0b01010, 0b00000, 0b01110, 0b00001, 0b01111, 0b10001, 0b01111, 0b00000};
+  CreateChar(CHAR_AE_DOTS, ae_dots);
+  
+  uint8_t oe_dots[8] = {0b01010, 0b00000, 0b01110, 0b10001, 0b10001, 0b10001, 0b01110, 0b00000};
+  CreateChar(CHAR_OE_DOTS, oe_dots);
+  
+  // Original custom characters for hourglass
   uint8_t customCharTwo[] = hourglass;
-  CreateChar(1, customCharTwo);
+  CreateChar(3, customCharTwo);
   uint8_t leftHour[] = leftSideHourglass;
-  CreateChar(2, leftHour);
+  CreateChar(4, leftHour);
   uint8_t rightHour[] = rightSideHourglass;
-  CreateChar(3, rightHour);
+  CreateChar(5, rightHour);
 }
 
 void HD44780::OutNibble(unsigned char nibble)
