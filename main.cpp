@@ -171,7 +171,7 @@ int getMessageForCustomer(Customer customer) {
     return 0;  // Reservlösning
 }
 
-// Hjälpfunktion för UTF-8 svenska tecken (för displayText och displayScroll)
+// Hjälpfunktion för UTF-8 svenska tecken (för displayText och displayScroll.)
 uint8_t fixSwedishUTF8(const char **text) {
     const unsigned char *p = (const unsigned char*)*text;
     if (p[0]==0xC3 && p[1]!=0) {
@@ -194,7 +194,7 @@ uint8_t fixSwedishUTF8(const char **text) {
 
 
 // ============================================
-// VISNINGSFUNKTIONER
+// VISNINGSFUNKTIONER.
 // ============================================
 
 // Visa statisk text (UTF-8-medveten)
