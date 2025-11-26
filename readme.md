@@ -1,6 +1,6 @@
 Reklamskyltsystem - C++ Lösning
 
-Översikt
+Översikt::
 
 Detta program implementerar ett digitalt reklamskyltsystem där olika kunder får visning baserat på hur mycket de betalat. 
 Systemet säkerställer att samma kund aldrig visas två gånger på raken.
